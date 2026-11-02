@@ -1,8 +1,6 @@
 import pandas as pd
 
-# The Excel file has an extra row of labels (X1, X2, ...) above the real
-# column names, so header=1 tells pandas to use the second row as headers.
-df = pd.read_excel("data/default of credit card clients.xls", header=1)
+df = pd.read_excel("data/default of credit card clients.xls", header=1)  # first row is just X1..X23 labels
 
 print("Shape:", df.shape)
 print(df.head())
