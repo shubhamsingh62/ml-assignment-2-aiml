@@ -1,6 +1,6 @@
 # Credit Card Default Prediction
 
-**Live Streamlit app:** _add link after deploying_
+**Live Streamlit app:** https://ml-assignment-ss.streamlit.app/
 
 ## a. Problem Statement
 
@@ -89,16 +89,18 @@ All metrics are calculated on the 6,000-row test set. For Precision, Recall and 
 | Naive Bayes | 0.3698 | 0.6816 | 0.2482 | 0.9111 | 0.3901 | 0.1351 |
 | Support Vector Machine | 0.8158 | 0.7267 | 0.6869 | 0.3075 | 0.4248 | 0.3719 |
 
+Note: on the deployed Streamlit app the KNN numbers can be slightly different in the third decimal (for example accuracy 0.8122 instead of 0.8125). A few test rows have two neighbours at exactly the same distance for the 15th spot, and Windows (where I trained) and Linux (Streamlit Cloud) round these distances a little differently, so a different neighbour gets picked. The other four models give the same numbers on both.
+
 ### Observations
 
 | ML Model Name | Observation about model performance |
 |---|---|
-| Logistic Regression | The most precise model (0.70): when it flags a customer as a defaulter, it is right 70% of the time. But it is also the most cautious, catching only 308 of the 1,327 actual defaulters (recall 0.23), which gives it the lowest F1 (0.35). As a linear model it cannot capture threshold effects such as "two or more months late". |
-| Decision Tree | Best on four of the six metrics: Accuracy (0.818), AUC (0.760), F1 (0.466) and MCC (0.393). It also catches the most defaulters (476) among the models with reasonable accuracy. The most recent repayment status (`PAY_1`) accounts for 65% of the tree's feature importance, and a tree can model rules like "late by 2+ months means high risk" directly. Limiting depth to 6 prevents overfitting. |
-| KNN | Very close behind the Decision Tree, with the second-best AUC (0.750) and F1 (0.446), and an MCC (0.371) practically tied with SVM. It depends on feature scaling to work well, and because it stores the whole training set it is the largest saved model (4.5 MB). |
-| Naive Bayes | The clear outlier. It flags 4,872 of the 6,000 test customers as defaulters, so its recall is the highest (0.91), but its accuracy (0.37) is far below the 77.9% baseline and its MCC is the lowest (0.135). Gaussian Naive Bayes assumes features are independent and normally distributed, but here the six bill amounts are strongly correlated (0.78 to 0.95) and the money amounts are heavily skewed, so its probability estimates are unreliable. |
-| Support Vector Machine | Second-highest accuracy (0.816) and precision (0.687), but recall is only 0.31 and its AUC (0.727) is the lowest of the four reasonable models. Training took about 45 seconds, compared with under one second for every other model, without any performance advantage on this dataset. |
-| **Overall winner** | **Decision Tree.** It has the best MCC, F1, AUC and accuracy, trains in under a second, is small (11 KB) and its decisions are easy to interpret. All models struggle with recall because of the class imbalance, and the best MCC of 0.39 shows that predicting default from these features alone is genuinely hard. |
+| Logistic Regression | Best precision of all five models (0.70), so when it says a customer will default it is usually right. The problem is that it predicts default very rarely. It found only 308 of the 1,327 defaulters (recall 0.23), so its F1 is the lowest (0.35). Since it is a linear model, it can't easily learn rules like "more than two months late means high risk". |
+| Decision Tree | Best model on accuracy (0.818), AUC (0.760), F1 (0.466) and MCC (0.393). It also found the most defaulters (476) among the models with decent accuracy. Most of its decisions come from `PAY_1`, the latest repayment status, which has 65% of the feature importance. A tree can split directly on things like "2 months late", which suits this data. I kept `max_depth` at 6 so it does not overfit. |
+| KNN | Second best on AUC (0.750) and F1 (0.446), and its MCC (0.371) is almost the same as SVM. It needs scaled features, otherwise large columns like the bill amounts would dominate the distance. It also keeps the whole training set inside the model, so it is the biggest saved file (4.5 MB). |
+| Naive Bayes | Worst model here. It marks 4,872 of the 6,000 test customers as defaulters. That gives the highest recall (0.91), but accuracy is only 0.37, much lower than just predicting "no default" for everyone (0.779). MCC is also the lowest (0.135). Gaussian NB assumes the features are independent and normally distributed, which is not true for this data: the six bill amounts are highly correlated with each other (0.78 to 0.95) and the money columns are very skewed. |
+| Support Vector Machine | Second highest accuracy (0.816) and precision (0.687), but recall is only 0.31 and its AUC (0.727) is lower than Logistic Regression, Decision Tree and KNN. It was also the slowest to train, about 45 seconds when every other model took under a second, and it did not give better results for that extra time. |
+| **Overall winner** | **Decision Tree.** It has the best accuracy, AUC, F1 and MCC, it trains in under a second, the saved model is only 11 KB, and it is easy to see why it makes a decision. I also tested the app on a random 2,000-row part of the test set and got the same picture: Decision Tree best by MCC, Logistic Regression best precision, Naive Bayes best recall. Recall is low for every model because only 22% of customers default, and the best MCC is only 0.39, so predicting default from this data is hard. |
 
 ## Streamlit App
 
