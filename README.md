@@ -89,7 +89,7 @@ All metrics are calculated on the 6,000-row test set. For Precision, Recall and 
 | Naive Bayes | 0.3698 | 0.6816 | 0.2482 | 0.9111 | 0.3901 | 0.1351 |
 | Support Vector Machine | 0.8158 | 0.7267 | 0.6869 | 0.3075 | 0.4248 | 0.3719 |
 
-Note: on the deployed Streamlit app the KNN numbers can be slightly different in the third decimal (for example accuracy 0.8122 instead of 0.8125). A few test rows have two neighbours at exactly the same distance for the 15th spot, and Windows (where I trained) and Linux (Streamlit Cloud) round these distances a little differently, so a different neighbour gets picked. The other four models give the same numbers on both.
+Note: on the deployed Streamlit app the KNN numbers are slightly different in the third decimal (for example accuracy 0.8122 instead of 0.8125). A few test rows have two neighbours at exactly the same distance for the 15th spot, and different machines (CPU and maths library) can round these distances a little differently, so a different neighbour gets picked. My PC and the BITS Virtual Lab both give 0.8125. The other four models give the same numbers everywhere.
 
 ### Observations
 
