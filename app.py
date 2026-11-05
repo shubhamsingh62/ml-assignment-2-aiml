@@ -72,7 +72,7 @@ st.caption(
 with st.sidebar:
     st.header("1. Test data")
     uploaded = st.file_uploader("Upload a test CSV", type="csv")
-    use_sample = st.checkbox("Use the sample test data instead")
+    use_sample = st.checkbox("Use the sample test data instead", value=True)
     st.download_button(
         "Download sample test_data.csv",
         data=(BASE_DIR / "test_data.csv").read_bytes(),
